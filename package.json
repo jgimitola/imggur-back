@@ -1,5 +1,6 @@
 {
   "name": "imggur-back",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "axios": "^1.3.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
