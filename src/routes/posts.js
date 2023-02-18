@@ -1,6 +1,10 @@
 import express from "express";
+import multer from "multer";
 
 import Post from "../models/Post.js";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const router = express.Router();
 
@@ -19,7 +23,7 @@ router.get("/", async (req, res) => {
         },
       });
     } else {
-      result = await Post.find({}).limit(4);
+      result = await Post.find({}).sort({ created_date: -1 }).limit(4);
     }
 
     res.status(200).json({ result });
@@ -28,14 +32,15 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  const { startDate, endDate } = req.query;
+router.post("/", upload.single("image"), async (req, res) => {
+  console.log(req.file);
 
-  const result = await Post.find({
-    created_date: { $gte: new Date(startDate), $lte: new Date(endDate) },
-  }).limit(4);
+  await Post.create({
+    username: req.body.username,
+    img_url: "https://pixlr.com/images/index/collage.webp",
+  });
 
-  res.json({ result });
+  res.status(201).json({ result: "OK" });
 });
 
 router.get("/stats", async (req, res) => {});
