@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import AWS from "aws-sdk";
+import Jimp from "jimp";
 
 import Post from "../models/Post.js";
 
@@ -40,11 +41,15 @@ router.get("/", async (req, res) => {
 
 router.post("/", upload.single("image"), async (req, res) => {
   try {
+    const JPEG_FILE_BUFFER = req.file.buffer;
+    const workingImage = await Jimp.read(JPEG_FILE_BUFFER);
+    const PNG_FILE_BUFFER = await workingImage.getBufferAsync(Jimp.MIME_PNG);
+
     const uploadedImage = await s3
       .upload({
-        Body: req.file.buffer,
+        Body: PNG_FILE_BUFFER,
         Bucket: process.env.AWS_S3_BUCKETNAME,
-        Key: `${Date.now()}.jpg`,
+        Key: `${Date.now()}.png`,
       })
       .promise();
 
