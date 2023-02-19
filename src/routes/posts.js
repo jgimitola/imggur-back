@@ -43,6 +43,46 @@ router.post("/", upload.single("image"), async (req, res) => {
   res.status(201).json({ result: "OK" });
 });
 
-router.get("/stats", async (req, res) => {});
+router.get("/stats", async (req, res) => {
+  const currentYear = new Date().getFullYear();
+
+  const result = await Post.aggregate([
+    {
+      $project: {
+        year: {
+          $year: "$created_date",
+        },
+        hour: {
+          $hour: "$created_date",
+        },
+      },
+    },
+    {
+      $match: {
+        year: currentYear,
+      },
+    },
+    {
+      $project: {
+        hour: 1,
+      },
+    },
+    {
+      $group: {
+        _id: "$hour",
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $sort: {
+        _id: 1,
+      },
+    },
+  ]);
+
+  res.json({ result });
+});
 
 export default router;
