@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
           ...(startDate && { $gte: new Date(startDate) }),
           ...(endDate && { $lte: new Date(endDate) }),
         },
-      });
+      }).sort({ created_date: -1 });
     } else {
       result = await Post.find({}).sort({ created_date: -1 }).limit(4);
     }
